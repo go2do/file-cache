@@ -4,7 +4,7 @@ Class FileCache
 {
 
     //$cache_dir is absolute or relative path
-    private static $cache_dir = '/tmp';
+    private $cache_dir = '/tmp/file_cache';
 
     public function setCacheDir($dir){
         return $this->cache_dir = $dir . '/';
@@ -24,8 +24,12 @@ Class FileCache
         return $this->getCache($filename);
     }
 
-    public function getCacheFromFile($filename){
-        return $this->getCache($filename);
+    /**
+     * @param string $path file path
+     * @return bool
+     */
+    public function getCacheFromFile($path){
+        return $this->getCache($path);
     }
 
     private function getCache($filename){
