@@ -20,8 +20,8 @@ Class FileCache
             return false;
         }
 
-        $filename = $this->getCacheFile($key);
-        return $this->getCache($filename);
+        $path = $this->getCachePath($key);
+        return $this->getCache($path);
     }
 
     /**
@@ -32,12 +32,12 @@ Class FileCache
         return $this->getCache($path);
     }
 
-    private function getCache($filename){
-        if (!file_exists($filename)) {
+    private function getCache($path){
+        if (!file_exists($path)) {
             return false;
         }
 
-        $file = file_get_contents($filename);
+        $file = file_get_contents($path);
         $data = unserialize($file);
 
         if (isset($data['expire']) && isset($data['value']) && time() <= $data['expire']) {
@@ -73,10 +73,10 @@ Class FileCache
         return file_put_contents($filename, serialize($data), LOCK_EX);
     }
 
-    private function getCacheFile($key){
+    private function getCachePath($key){
         $fileDir = $this->cache_dir . substr(md5($key), 0, 2);
-        $filename = $fileDir . '/' . $key;
-        return $filename;
+        $path = $fileDir . '/' . $key;
+        return $path;
     }
 
     private function setCacheFile($key){
