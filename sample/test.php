@@ -57,7 +57,6 @@ echo '<br>';
 //Valid key must be string
 $key = 123;
 $value = array('empty key');
-$fileCache5 = new FileCache();
 $isCache = $fileCache->set($key, $value);
 if ($isCache === false) {
     echo 'Success! The key must be string type.';
