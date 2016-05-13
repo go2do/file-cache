@@ -4,7 +4,11 @@ Class FileCache
 {
 
     //$cache_dir is absolute or relative path
-    private $cache_dir = 'cache/files/';
+    private static $cache_dir = '/tmp';
+
+    public function setCacheDir($dir){
+        return $this->cache_dir = $dir . '/';
+    }
 
     /**
      * @param string $key
@@ -16,7 +20,15 @@ Class FileCache
             return false;
         }
 
-        $filename = $this->cache_dir . $key;
+        $filename = $this->getCacheFile($key);
+        return $this->getCache($filename);
+    }
+
+    public function getCacheFromFile($filename){
+        return $this->getCache($filename);
+    }
+
+    private function getCache($filename){
         if (!file_exists($filename)) {
             return false;
         }
@@ -48,12 +60,30 @@ Class FileCache
             return false;
         }
 
-        $filename = $this->cache_dir . $key;
+        $filename = $this->setCacheFile($key);
+        
         $data = array(
             'expire' => time() + $expire,
             'value' => $value,
         );
         return file_put_contents($filename, serialize($data), LOCK_EX);
+    }
+
+    private function getCacheFile($key){
+        $fileDir = $this->cache_dir . substr(md5($key), 0, 2);
+        $filename = $fileDir . '/' . $key;
+        return $filename;
+    }
+
+    private function setCacheFile($key){
+        $fileDir = $this->cache_dir . substr(md5($key), 0, 2);
+
+        if(!is_dir($fileDir) && !mkdir($fileDir , 0777, true)){
+            return false;
+        }
+
+        $filename = $fileDir . '/' . $key;
+        return $filename;
     }
 
     private function filterKey($key)

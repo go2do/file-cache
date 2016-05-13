@@ -1,13 +1,16 @@
 <?php
 
-include 'FileCache.php';
+include '../FileCache.php';
+
+$fileCache = new FileCache();
+$fileCache->setCacheDir('/data0/php/file-cache/cache/files');
 
 //存储字符串
 $key = 'file-str';
 $value = 'Test string';
-$fileCache1 = new FileCache();
-$fileCache1->set($key, $value);
-$data = $fileCache1->get($key);
+$m = $fileCache->set($key, $value);
+$data = $fileCache->get($key);
+
 if ($data !== false) {
     echo 'Success! ';
     print_r($data);
@@ -19,9 +22,8 @@ echo '<br>';
 //存储多维数组
 $key = 'file-multi-arr';
 $value = array('123', 'hello' => array('OK'));
-$fileCache2 = new FileCache();
-$fileCache2->set($key, $value);
-$data = $fileCache2->get($key);
+$fileCache->set($key, $value);
+$data = $fileCache->get($key);
 if ($data !== false) {
     echo 'Success! ';
     print_r($data);
@@ -32,8 +34,7 @@ echo '<br>';
 
 //已过期的文件缓存
 $key = 'file-expired';
-$fileCache3 = new FileCache();
-$data = $fileCache3->get($key);
+$data = $fileCache->getCacheFromFile('./file-expired');
 if ($data === false) {
     echo 'Success! The file cache has expired.';
 }else{
@@ -44,8 +45,7 @@ echo '<br>';
 //空key验证
 $key = '';
 $value = array('empty key');
-$fileCache4 = new FileCache();
-$isCache = $fileCache4->set($key, $value);
+$isCache = $fileCache->set($key, $value);
 print_r($isCache);
 if ($isCache === false) {
     echo 'Success! Empty key can not be saved.';
@@ -58,8 +58,7 @@ echo '<br>';
 $key = 123;
 $value = array('empty key');
 $fileCache5 = new FileCache();
-$isCache = $fileCache5->set($key, $value);
-print_r($isCache);
+$isCache = $fileCache->set($key, $value);
 if ($isCache === false) {
     echo 'Success! The key must be string type.';
 }else{
